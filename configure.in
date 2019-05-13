@@ -2505,6 +2505,14 @@ case "$host" in
             have_timers=yes
         fi
         ;;
+    *-*-corax*)
+            ARCH=corax
+            CheckDummyVideo
+            CheckDummyAudio
+            AC_DEFINE(SDL_VIDEO_DRIVER_CORAX)
+            SOURCES="$SOURCES $srcdir/src/video/corax/*.c"
+            EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lcorax"
+        ;;
     *-*-cygwin* | *-*-mingw32*)
         ARCH=win32
         if test "$build" != "$host"; then # cross-compiling
