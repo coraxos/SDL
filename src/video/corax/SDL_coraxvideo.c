@@ -46,6 +46,8 @@
 #include "SDL_coraxevents_c.h"
 #include "SDL_coraxmouse_c.h"
 
+#include "syscall.h" //From corax libc
+
 #define CORAXVID_DRIVER_NAME "corax"
 
 /* Initialization/Query functions */
@@ -146,8 +148,9 @@ int CORAX_VideoInit(_THIS, SDL_PixelFormat *vformat)
 
 	/* Determine the screen depth (use default 8-bit depth) */
 	/* we change this during the SDL_SetVideoMode implementation... */
-	vformat->BitsPerPixel = 8;
-	vformat->BytesPerPixel = 1;
+	vformat->BitsPerPixel = 32;
+	vformat->BytesPerPixel = 4;
+	vformat->Amask = 0xFF000000;
 
 	/* We're done! */
 	return(0);
@@ -215,9 +218,15 @@ static void CORAX_UnlockHWSurface(_THIS, SDL_Surface *surface)
 	return;
 }
 
+static inline void syscall_draw(int w, int h, void* framebuffer) {
+	update_display(w, h, framebuffer);
+}
+
 static void CORAX_UpdateRects(_THIS, int numrects, SDL_Rect *rects)
 {
-	/* do nothing. */
+	if(SDL_VideoSurface != NULL && SDL_VideoSurface->pixels != NULL) {
+		syscall_draw(SDL_VideoSurface->w, SDL_VideoSurface->h, SDL_VideoSurface->pixels);
+	}
 }
 
 int CORAX_SetColors(_THIS, int firstcolor, int ncolors, SDL_Color *colors)
@@ -236,4 +245,12 @@ void CORAX_VideoQuit(_THIS)
 		SDL_free(this->screen->pixels);
 		this->screen->pixels = NULL;
 	}
+
+	//Clear the input buffer
+	int character = getc(stdin);
+    while (character != EOF)
+	{
+		character = getc(stdin);
+	}
+	fcntl(0, 0, 0);
 }
