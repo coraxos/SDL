@@ -1,6 +1,8 @@
 .vscode/*
 autom4te.cache/*
+build/*
+build2/*
 test/*
-
+aclocal.m4
+sdl.pc
 configure
-
