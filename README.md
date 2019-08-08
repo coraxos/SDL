@@ -1,3 +1,15 @@
+# SDL 1.2
+
+SDL library ported to coraxOS (https://github.com/coraxos).
+
+## Building
+
+1. Run autogen.sh to create the configure file
+2. export the cross compiler variables CC, CXX, LD and ldLibs (see run-configure.sh for more details)
+3. Run run-configure.sh
+The libSDL.a library will be created in "build2/lib/".
+
+# Original SDL README below
 
                          Simple DirectMedia Layer
 
